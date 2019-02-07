@@ -5,7 +5,7 @@ client_secret =
 
 [account gmail]
 username = you@gmail.com
-refresh_token = 
+repo = 
 address = smtp.gmail.com
 port = 465
 use_ssl = True
@@ -13,7 +13,7 @@ use_tls = False
 
 [account gapps]
 username = pigpen@example.com
-refresh_token = 
+repo = 
 address = smtp.gmail.com
 port = 465
 use_ssl = True
