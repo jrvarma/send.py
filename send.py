@@ -11,6 +11,7 @@ import smtplib
 import urllib
 import json
 import base64
+import gnomekeyring as gkey
 
 CONFIG_PATH = '~/.sendpyrc'
 Oauth = namedtuple('Oauth',
@@ -96,7 +97,7 @@ def build_accounts(config):
     acct_sections = [x for x in config.sections() if x.startswith('account ')]
     for section in acct_sections:
         username = config.get(section, 'username')
-        refresh_token = config.get(section, 'refresh_token')
+        refresh_token = get_refresh_token(config.get(section, 'repo'))
         address = config.get(section, 'address')
         port = config.getint(section, 'port')
         use_ssl = config.getboolean(section, 'use_ssl')
@@ -142,6 +143,13 @@ def sender(fromaddr, toaddrs, msg, oauth, acct, debug=False):
     server.sendmail(fromaddr, toaddrs, msg.as_string())
 
     server.quit()
+ 
+def get_refresh_token(repo):
+# modified from
+# https://jason.the-graham.com/2011/01/16/gnome_keyring_with_msmtp_imapfilter_offlineimap/
+    attrs = {"repo": repo}
+    items = gkey.find_items_sync(gkey.ITEM_NETWORK_PASSWORD, attrs)
+    return (items[0].attributes["user"], items[0].secret)
 
 
 if __name__ == '__main__':
